@@ -5,5 +5,5 @@ RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn back:build
 RUN yarn front:build
-EXPOSE 8000
+EXPOSE 4000
 CMD ["yarn", "start"]
