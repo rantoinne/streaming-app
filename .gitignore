@@ -1,0 +1,11 @@
+prod/
+node_modules/
+.env
+.env.local
+.env.*.local
+dist/
+rantoinne-streaming-postgres/
+rantoinne-streaming-redis/
+
+yarn_cache/
+yarn.lock

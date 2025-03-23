@@ -1,0 +1,68 @@
+services:
+  rantoinne-streaming-postgres:
+    container_name: rantoinne-streaming-postgres
+    image: postgres:17-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ./rantoinne-streaming-postgres:/var/lib/postgresql/data:cached
+    networks:
+      - rantoinne-streaming-network
+
+  rantoinne-streaming-redis:
+    container_name: rantoinne-streaming-redis
+    image: redis:7.4-alpine
+    restart: always
+    volumes:
+      - ./rantoinne-streaming-redis:/data:cached
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    networks:
+      - rantoinne-streaming-network
+
+  rantoinne-streaming-node:
+    container_name: rantoinne-streaming-node
+    image: node:23
+    environment:
+      - NODE_PORT=${NODE_PORT}
+      - DB_HOST=rantoinne-streaming-postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    volumes:
+      - ./:/usr/src/rantoinne-streaming-node:cached
+      - ./yarn_cache:/yarn:cached
+    working_dir: /usr/src/rantoinne-streaming-node
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'Starting setup...' &&
+        yarn config set cache-folder /yarn &&
+        echo 'Installing dependencies...' &&
+        yarn &&
+        echo 'Building backend...' &&
+        yarn back:build &&
+        echo 'Starting development server...' &&
+        yarn dev
+    ports:
+      - ${NODE_PORT}:${NODE_PORT}
+      - ${REACT_PORT}:${REACT_PORT}
+    depends_on:
+      - rantoinne-streaming-postgres
+      - rantoinne-streaming-redis
+    networks:
+      - rantoinne-streaming-network
+
+networks:
+  rantoinne-streaming-network:
+    name: rantoinne-streaming-network
+    driver: bridge
