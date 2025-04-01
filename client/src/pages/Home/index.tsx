@@ -1,45 +1,46 @@
 import { useEffect, useRef } from 'react';
+import VideoCall from '../../components/Video';
 
 type Props = {}
 
 const Home = ({}: Props) => {
-  const ws = useRef<WebSocket | null>(null);
+  // const ws = useRef<WebSocket | null>(null);
 
-  useEffect(() => {
-    ws.current = new WebSocket('ws://localhost:4000');
+  // useEffect(() => {
+  //   ws.current = new WebSocket('ws://localhost:4000');
 
-    // Handle incoming messages
-    ws.current.onmessage = (event) => {
-      console.log({ event });
-    };
+  //   // Handle incoming messages
+  //   ws.current.onmessage = (event) => {
+  //     console.log({ event });
+  //   };
 
-    // Handle connection open
-    ws.current.onopen = () => {
-      console.log('WebSocket connection established');
-    };
+  //   // Handle connection open
+  //   ws.current.onopen = () => {
+  //     console.log('WebSocket connection established');
+  //   };
 
-    // Handle connection close
-    ws.current.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
+  //   // Handle connection close
+  //   ws.current.onclose = () => {
+  //     console.log('WebSocket connection closed');
+  //   };
 
-    ws.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+  //   ws.current.onerror = (error) => {
+  //     console.error('WebSocket error:', error);
+  //   };
     
-    // Cleanup on component unmount
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
-  }, []);
+  //   // Cleanup on component unmount
+  //   return () => {
+  //     if (ws.current) {
+  //       ws.current.close();
+  //     }
+  //   };
+  // }, []);
   
-  const sendMessage = () => {
-    if (ws.current) {
-      ws.current.send("Hello server!");
-    }
-  };
+  // const sendMessage = () => {
+  //   if (ws.current) {
+  //     ws.current.send("Hello server!");
+  //   }
+  // };
   
   return (
     <div>
@@ -49,7 +50,8 @@ const Home = ({}: Props) => {
           .then(res => res.json())
           .then(data => console.log(data))
       }}>Click me</button>
-      <button onClick={sendMessage}>Send Message</button>
+      <VideoCall />
+      {/* <button onClick={sendMessage}>Send Message</button> */}
     </div>
   )
 }

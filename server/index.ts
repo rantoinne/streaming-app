@@ -50,4 +50,32 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server up and running on port ${PORT}`);
 });
 
+process.on('SIGINT', () => {
+  console.log('SIGINT signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+  });
+  wss.close((err: Error) => {
+    if (err) {
+      console.error('Error closing WebSocket server:', err);
+    } else {
+      console.log('WebSocket server closed');
+    }
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+  });
+  wss.close((err: Error) => {
+    if (err) {
+      console.error('Error closing WebSocket server:', err);
+    } else {
+      console.log('WebSocket server closed');
+    }
+  });
+});
+
 export default server;
